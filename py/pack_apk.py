@@ -50,16 +50,17 @@ for i in os.listdir(os.getcwd()):
 for i in os.listdir(os.getcwd()):
     if os.path.isfile(i):
         if i.endswith(".dex"):
-            print(i)
-            if count == 0:
-                os.rename(i, "classes.dex")
-                print("classes.dex")
-                count = count+1
-            else:
-                name = "classes{index}.dex".format(index=str(count))
-                os.rename(i, name)
-                print(name)
-                count = count + 1
+            if i.find("classes") == -1:
+                print(i)
+                if count == 0:
+                    os.rename(i, "classes.dex")
+                    print("classes.dex")
+                    count = count+1
+                else:
+                    name = "classes{index}.dex".format(index=str(count))
+                    os.rename(i, name)
+                    print(name)
+                    count = count + 1
 
 
 # 为apk文件塞入重命名后的dex文件列表
@@ -81,16 +82,14 @@ for j in os.listdir(os.getcwd()):
             # 删除所有的dex文件
             for i in os.listdir("zip_tmp"):
                 if os.path.isfile(i) & i.endswith(".dex"):
-                    os.remove(zip_tmp_path+os.sep+i)
+                    os.remove(zip_tmp_path+"\\"+i)
 
             # 将前面重命名的dex文件写入临时文件夹
             for i in range(0, count):
                 if i == 0:
-                    shutil.copyfile(root_p+"{separator}classes.dex".format(separator=os.sep),
-                                    zip_tmp_path+"{separator}classes.dex".format(separator=os.sep))
+                    shutil.copyfile(root_p+"\\classes.dex", zip_tmp_path+"\\classes.dex")
                 else:
-                    shutil.copyfile((root_p+"{separator}classes{index}.dex").format(separator=os.sep, index=str(i)),
-                                    (zip_tmp_path+"{separator}classes{index}.dex").format(separator=os.sep, index=str(i)))
+                    shutil.copyfile((root_p+"\\classes{index}.dex").format(index=str(i)), (zip_tmp_path+"\\classes{index}.dex").format(index=str(i)))
         os.remove(zip_name)
         print(j)
         zip_file("zip_tmp")
@@ -98,3 +97,14 @@ for j in os.listdir(os.getcwd()):
         print("重新打包成功")
         if os.path.exists("zip_tmp") & os.path.isdir("zip_tmp"):
             shutil.rmtree("zip_tmp")
+
+# 打包完成，删除所有的dex文件
+for i in os.listdir(os.getcwd()):
+    if os.path.isfile(i):
+        if i.endswith(".dex"):
+            os.remove(i)
+
+
+
+
+
